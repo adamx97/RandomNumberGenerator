@@ -1,9 +1,12 @@
 This project generates real (not pseudo) random ints or chars using the built-in RDRAND capabilities of most modern Intel and AMD processors.
 
+There are versions for both Linux and Windows.  
+
 RDRAND and RDSEED are intrinsic functions that generate random numbers based on unpredictable noise generated within the CPU itself. 
 
-The RDRAND function is used in the rd_functions.dll.  The rd_functions.py PYTHON program demonstrates its use. The CPU_Capabilities.exe program 
-determines if the CPU supports the RDRAND and RDSEED functions and runs some simple tests.
+The RDRAND function is used in the rd_functions.dll.  The rd_functions.py PYTHON program demonstrates its use. The CPU_Capabilities.exe (on Windows; it is just CPU_Capabilities on Linux) program 
+determines if the CPU supports the RDRAND and RDSEED functions, runs some simple tests and returns a successful exit code if the CPU supports the function.
+This will be used when to determine container suitability when deploying the Lambda function in the next phase.
 
 From the AMD documentation: 
 
