@@ -1,7 +1,23 @@
 import ctypes
+import platform
+import platform
+
+# Check the operating system
+if platform.system() == 'Linux':
+    # Code to execute on Linux
+    rd_functions = ctypes.CDLL('./rd_functions.so')  # Replace with the actual path to your rd_functions.dll
+    print("Running on Linux")
+elif platform.system() == 'Windows':
+    # Code to execute on Windows
+    rd_functions = ctypes.CDLL('./rd_functions.dll')  # Replace with the actual path to your rd_functions.dll
+    print("Running on Windows")
+else:
+    # Code to execute on other operating systems
+    print("Running on unsupported OS: " +platform.system())
+    raise("Running on unsupported OS: " +platform.system())
 
 # Load the shared library
-rd_functions = ctypes.CDLL('./rd_functions.dll')  # Replace with the actual path to your rd_functions.dll
+
 
 # Define the argument and return types for the functions
 

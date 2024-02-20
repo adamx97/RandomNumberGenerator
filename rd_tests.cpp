@@ -45,7 +45,7 @@ void test_rdrand_get_bytes(int length)
         std::cout << "GOOD: Buffer has changed ";
     }
 
-    if (result == length)
+    if (result == (unsigned int) length)
     {
         // Print the bytes in the buffer
         for (int i = 0; i < length; i++)
@@ -95,7 +95,7 @@ void test_rdrand_get_n_uints(int length)
     {
         std::cout << "GOOD: Buffer has changed ";
     }
-    if (result == length)
+    if (result == (unsigned int) length)
     {
         // Print the bytes in the buffer
         for (int i = 0; i < length; i++)

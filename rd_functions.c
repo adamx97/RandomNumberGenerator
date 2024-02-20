@@ -15,7 +15,6 @@ Code Example 3 shows this implemented for 16-, 32-, and 64-bit invocations of RD
 #include <immintrin.h>
 #include <stdio.h>
 
-
 #ifdef _WIN32
 #define EXPORT __declspec(dllexport)
 #else
@@ -61,10 +60,15 @@ EXPORT int rdrand32_retry(unsigned int retries, uint32_t *rand)
 EXPORT int rdrand64_retry(unsigned int retries, uint64_t *rand)
 {
 	unsigned int count = 0;
-
+#ifdef __linux__
+	unsigned long long* castrand = (unsigned long long*)rand;
+#endif
+#ifdef _WIN32
+	uint64_t castrand = rand;
+#endif
 	while (count <= retries)
 	{
-		if (_rdrand64_step(rand))
+		if (_rdrand64_step(castrand))
 		{
 			return 1;
 		}
@@ -131,7 +135,7 @@ EXPORT unsigned int rdrand_get_n_uints(unsigned int n, unsigned int *dest)
 			total_uints += 2;
 		}
 		else
-		{	// if call above fails, we will return the number of uints generated so far
+		{ // if call above fails, we will return the number of uints generated so far
 			return total_uints;
 		}
 	}
@@ -230,40 +234,40 @@ EXPORT unsigned int rdrand_get_n_uints(unsigned int n, unsigned int *dest)
 // 	return n;
 // }
 
-EXPORT unsigned int rdrand_get_bytes(unsigned int n, unsigned char* dest)
+EXPORT unsigned int rdrand_get_bytes(unsigned int n, unsigned char *dest)
 {
-    unsigned int total_bytes = n;
-    unsigned int total_uints = n / 8;
-    unsigned char *ptr = dest;
-	uint64_t* dest_uint64 = (uint64_t*)dest;
+	unsigned int total_bytes = n;
+	unsigned int total_uints = n / 8;
+	unsigned char *ptr = dest;
+	uint64_t *dest_uint64 = (uint64_t *)dest;
 
-    // Fill complete uints first
-    for (unsigned int i = 0; i < total_uints; ++i)
-    {
-        if (!rdrand64_retry(RDRAND_RETRIES, dest_uint64))
-        {
-            return i * 8;  // Return the number of bytes generated so far
-        }
-        ptr += 8;
+	// Fill complete uints first
+	for (unsigned int i = 0; i < total_uints; ++i)
+	{
+		if (!rdrand64_retry(RDRAND_RETRIES, dest_uint64))
+		{
+			return i * 8; // Return the number of bytes generated so far
+		}
+		ptr += 8;
 		dest_uint64 += 8;
-    }
+	}
 
-    // Fill the residual
-    unsigned int residual_bytes = n % 8;
-    if (residual_bytes > 0)
-    {
-        uint64_t residual_value;
-        if (!rdrand64_retry(RDRAND_RETRIES, &residual_value))
-        {
-            return total_bytes - residual_bytes;  // Return the number of bytes generated so far
-        }
+	// Fill the residual
+	unsigned int residual_bytes = n % 8;
+	if (residual_bytes > 0)
+	{
+		uint64_t residual_value;
+		if (!rdrand64_retry(RDRAND_RETRIES, &residual_value))
+		{
+			return total_bytes - residual_bytes; // Return the number of bytes generated so far
+		}
 
-        for (unsigned int i = 0; i < residual_bytes; ++i)
-        {
-            *ptr = (residual_value >> (i * 8)) & 0xFF;
-            ptr++;
-        }
-    }
+		for (unsigned int i = 0; i < residual_bytes; ++i)
+		{
+			*ptr = (residual_value >> (i * 8)) & 0xFF;
+			ptr++;
+		}
+	}
 
-    return total_bytes;  // All bytes have been generated
+	return total_bytes; // All bytes have been generated
 }
