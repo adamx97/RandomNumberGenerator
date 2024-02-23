@@ -297,6 +297,7 @@ int main()
     test_rdrand_get_n_uints(4);
     test_rdrand_get_n_uints(8);
     test_rdrand_get_n_uints(10);
+    test_rdrand_get_n_uints(1001);
 
     if (InstructionSet::RDSEED() && InstructionSet::RDRAND())
     {

@@ -1,5 +1,7 @@
 
 #include <cstring>
+#include <iostream>
+
 extern "C"
 {
 // add your C #include statements here
@@ -10,8 +12,7 @@ void test_rdrand_get_bytes(int length)
 {
     unsigned char *original_buffer = new unsigned char[length];
     unsigned char *buffer = new unsigned char[length];
-    // Zero-initialize the buffer
-    memset(buffer, 0, length);
+
     // Store the original values in original_buffer
     for (int i = 0; i < length; i++)
     {
@@ -31,9 +32,13 @@ void test_rdrand_get_bytes(int length)
             break;
         }
     }
-    if ((length > 0) && (equal/length  > 0.004))
+    if ((length > 0) && (equal/length > 0.004))  
+    // there is a very small chance that the two buffers match at any given byte, 
+    // (if we zero the buffer to be all zeroes,
+    // there is .0039 % chance that the contents are the same (they are both 0) because     
+    // we are generating ints from 0 to 255 (1 byte). But I'm not zeroing the buffer because it is safe to use when we new it.
     {
-        std::cout << "PROBLEM! Buffer is unchanged (has more than .004% zeroes) (Original: ";
+        std::cout << "PROBLEM! Buffer is unchanged (has more than .004% matches) (Original: ";
         // Print the bytes in the original buffer
         for (int i = 0; i < length; i++)
         {
@@ -45,11 +50,10 @@ void test_rdrand_get_bytes(int length)
     {
         std::cout << "GOOD: Buffer has changed ";
     }
-
     if (result == (unsigned int) length)
     {
         // Print the bytes in the buffer
-        for (int i = 0; i < length; i++)
+        for (int i = 0; i < std::min(length, 20); i++)
         {
             std::cout << std::hex << static_cast<int>(buffer[i]) << " ";
         }
@@ -99,7 +103,7 @@ void test_rdrand_get_n_uints(int length)
     if (result == (unsigned int) length)
     {
         // Print the bytes in the buffer
-        for (int i = 0; i < length; i++)
+        for (int i = 0; i < std::min (20,length) ; i++)
         {
             std::cout << buffer[i] << " ";
         }
