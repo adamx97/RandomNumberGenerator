@@ -2,7 +2,7 @@
     "tasks": [
         {
             "type": "cppbuild",
-            "label": "cl.exe build (debug) active file ",
+            "label": "cl.exe build (debug) active file",
             "command": "cl.exe",
             "args": [
                 "/Zi",

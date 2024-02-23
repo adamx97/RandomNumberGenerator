@@ -64,7 +64,7 @@ EXPORT int rdrand64_retry(unsigned int retries, uint64_t *rand)
 	unsigned long long* castrand = (unsigned long long*)rand;
 #endif
 #ifdef _WIN32
-	uint64_t castrand = rand;
+	uint64_t *castrand = rand;
 #endif
 	while (count <= retries)
 	{
@@ -238,18 +238,22 @@ EXPORT unsigned int rdrand_get_bytes(unsigned int n, unsigned char *dest)
 {
 	unsigned int total_bytes = n;
 	unsigned int total_uints = n / 8;
-	unsigned char *ptr = dest;
-	uint64_t *dest_uint64 = (uint64_t *)dest;
+	unsigned char *headstart = dest;
+	//uint64_t *dest_uint64 = (uint64_t *)dest; BAD : consider the strict aliasing rule, which states that objects of one type cannot be accessed through a pointer of another type, except through character types (such as unsigned char *). Violating this rule can lead to undefined behavior, where the behavior of the program is unpredictable and can vary between different compilers and optimization levels.
+	uint64_t i, temprand;
+	
 
 	// Fill complete uints first
 	for (unsigned int i = 0; i < total_uints; ++i)
 	{
-		if (!rdrand64_retry(RDRAND_RETRIES, dest_uint64))
+		if (!rdrand64_retry(RDRAND_RETRIES, &temprand))
 		{
 			return i * 8; // Return the number of bytes generated so far
 		}
-		ptr += 8;
-		dest_uint64 += 8;
+		memcpy(headstart, &temprand, 8);
+		headstart += 8;
+		
+		//dest_uint64 += 8;
 	}
 
 	// Fill the residual
@@ -257,16 +261,11 @@ EXPORT unsigned int rdrand_get_bytes(unsigned int n, unsigned char *dest)
 	if (residual_bytes > 0)
 	{
 		uint64_t residual_value;
-		if (!rdrand64_retry(RDRAND_RETRIES, &residual_value))
+		if (!rdrand64_retry(RDRAND_RETRIES, &temprand))
 		{
 			return total_bytes - residual_bytes; // Return the number of bytes generated so far
 		}
-
-		for (unsigned int i = 0; i < residual_bytes; ++i)
-		{
-			*ptr = (residual_value >> (i * 8)) & 0xFF;
-			ptr++;
-		}
+		memcpy(headstart, &temprand, residual_bytes);
 	}
 
 	return total_bytes; // All bytes have been generated

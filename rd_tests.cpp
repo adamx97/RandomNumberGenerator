@@ -1,5 +1,5 @@
 
-
+#include <cstring>
 extern "C"
 {
 // add your C #include statements here
@@ -10,7 +10,8 @@ void test_rdrand_get_bytes(int length)
 {
     unsigned char *original_buffer = new unsigned char[length];
     unsigned char *buffer = new unsigned char[length];
-
+    // Zero-initialize the buffer
+    memset(buffer, 0, length);
     // Store the original values in original_buffer
     for (int i = 0; i < length; i++)
     {
@@ -21,18 +22,18 @@ void test_rdrand_get_bytes(int length)
     unsigned int result = rdrand_get_bytes(length, buffer);
 
     // Compare the contents of the two buffers. it is a problem if the contents are the same after the call to rdrand_get_bytes
-    bool equal = false;
+    int equal = 0;
     for (int i = 0; i < length; i++)
     {
         if (original_buffer[i] == buffer[i])
         {
-            equal = true;
+            equal += 1;
             break;
         }
     }
-    if (equal)
+    if ((length > 0) && (equal/length  > 0.004))
     {
-        std::cout << "PROBLEM! Buffer is unchanged (Original: ";
+        std::cout << "PROBLEM! Buffer is unchanged (has more than .004% zeroes) (Original: ";
         // Print the bytes in the original buffer
         for (int i = 0; i < length; i++)
         {

@@ -292,6 +292,7 @@ int main()
     test_rdrand_get_bytes(4);
     test_rdrand_get_bytes(8);
     test_rdrand_get_bytes(10);
+    test_rdrand_get_bytes(1000);
     test_rdrand_get_n_uints(0);
     test_rdrand_get_n_uints(4);
     test_rdrand_get_n_uints(8);
