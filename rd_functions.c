@@ -14,6 +14,9 @@ Code Example 3 shows this implemented for 16-, 32-, and 64-bit invocations of RD
 #include <stdint.h>
 #include <immintrin.h>
 #include <stdio.h>
+#ifdef __linux__
+#include <string.h>
+#endif
 
 #ifdef _WIN32
 #define EXPORT __declspec(dllexport)
@@ -240,7 +243,7 @@ EXPORT unsigned int rdrand_get_bytes(unsigned int n, unsigned char *dest)
 	unsigned int total_uints = n / 8;
 	unsigned char *headstart = dest;
 	//uint64_t *dest_uint64 = (uint64_t *)dest; BAD : consider the strict aliasing rule, which states that objects of one type cannot be accessed through a pointer of another type, except through character types (such as unsigned char *). Violating this rule can lead to undefined behavior, where the behavior of the program is unpredictable and can vary between different compilers and optimization levels.
-	uint64_t i, temprand;
+	uint64_t temprand;
 	
 
 	// Fill complete uints first
@@ -260,7 +263,6 @@ EXPORT unsigned int rdrand_get_bytes(unsigned int n, unsigned char *dest)
 	unsigned int residual_bytes = n % 8;
 	if (residual_bytes > 0)
 	{
-		uint64_t residual_value;
 		if (!rdrand64_retry(RDRAND_RETRIES, &temprand))
 		{
 			return total_bytes - residual_bytes; // Return the number of bytes generated so far
