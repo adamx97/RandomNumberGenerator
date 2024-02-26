@@ -1,5 +1,7 @@
 This project generates real (not pseudo) random ints or chars using the built-in RDRAND capabilities of most modern Intel and AMD processors.
 
+This is an academic exercise demonstrating faciliity in generating C code that can be used by Python functions, then exposed via Azure web functions or AWS lambdas.  While the speed seems adequate for most uses--the hardware device generates 3Gbps in the earliest stage--it is slower than some software implementations.
+
 There are versions for both Linux and Windows.  
 
 RDRAND and RDSEED are intrinsic functions that generate random numbers based on unpredictable noise generated within the CPU itself. 
@@ -21,3 +23,4 @@ generators in the field of cryptography and internet security are:
 • Seeding software based pseudo-random number generators (PRNG) 
 (https://www.amd.com/content/dam/amd/en/documents/pdfs/developer/aocl/amd-secure-random-number-generator-library-2.0-whitepaper.pdf)
 
+Users of Python are seeking a drop in replacement for Python's random function are advised to use the module found at https://pypi.org/project/rdrand/0.9.0/
