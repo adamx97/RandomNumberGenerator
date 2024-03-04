@@ -24,3 +24,5 @@ generators in the field of cryptography and internet security are:
 (https://www.amd.com/content/dam/amd/en/documents/pdfs/developer/aocl/amd-secure-random-number-generator-library-2.0-whitepaper.pdf)
 
 Users of Python are seeking a drop in replacement for Python's random function are advised to use the module found at https://pypi.org/project/rdrand/0.9.0/
+
+More notes on this can be found in [my blog.](https://dynamicsoftwaremd.blogspot.com/2024/03/random-numbers.html)
