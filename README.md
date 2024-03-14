@@ -2,7 +2,9 @@ This project generates real random (not pseudo-random) ints or chars using the b
 
 This is an academic exercise demonstrating faciliity in generating C code that can be used by Python functions, then exposed via Azure web functions or AWS lambdas.  The speed seems adequate for most uses--the hardware device generates 3Gbps in the earliest stage.  Azure web function code and publicly available URLs are at: https://github.com/adamx97/randomNumberGenerator_AzureFunction
 
-There are versions for both Linux and Windows.  
+There are versions for both Linux and Windows, compilable with gcc and cl (Microsoft's Windows compiler) respectively.
+
+More notes on this can be found in [my blog.](https://dynamicsoftwaremd.blogspot.com/2024/03/random-numbers.html)
 
 RDRAND and RDSEED are intrinsic functions that generate random numbers based on unpredictable noise generated within the CPU itself. 
 
@@ -25,4 +27,4 @@ generators in the field of cryptography and internet security are:
 
 Users of Python are seeking a drop in replacement for Python's random function are advised to use the module found at https://pypi.org/project/rdrand/0.9.0/
 
-More notes on this can be found in [my blog.](https://dynamicsoftwaremd.blogspot.com/2024/03/random-numbers.html)
+
